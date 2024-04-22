@@ -20,19 +20,18 @@ int main()
     {
         notebook[i].numeroNot = i + 1; // Números de notebook de 1 a 10
         notebook[i].isReservado = 0;   // Todos os notebooks estão inicialmente disponíveis
-        notebook[i].isRetirado = 0;     // Nenhum notebook foi retirado
-        notebook[i].isEstragado = 0;    // Nenhum notebook está estragado
-        notebook[i].raAluno = 0;        // Nenhum aluno atribuído inicialmente
+        notebook[i].isRetirado = 0;    // Nenhum notebook foi retirado
+        notebook[i].isEstragado = 0;   // Nenhum notebook está estragado
+        notebook[i].raAluno = 0;       // Nenhum aluno atribuído inicialmente
     }
-    // falando que um notebook esta estrago
+    // falando que um notebook esta estragado
     notebook[0].isEstragado = 1;
 
     // simulando que o notebook 3 e 6 estao reservados, e os r.a ficticio dos alunos
     notebook[3].isReservado = 1;
-    notebook[3].raAluno = 1234567;
+    notebook[3].raAluno = 12345;
     notebook[6].isReservado = 1;
-    notebook[6].isReservado = 7654321;
-
+    notebook[6].raAluno = 7654321;
 
     // Variáveis globais
     int isAdm;
@@ -42,12 +41,12 @@ int main()
     char loginAdm[10], senhaAdm[10];
 
     // Variáveis para controlar o sistema de aluno
-    char loginAluno[10], senhaAluno[10];
+    int senhaAluno, tentarSenha = 1, raAluno;
 
     // Loop principal do programa
     do
     {
-        printf("------- BEM VINDO AO SISTEMA DE RESERVA DE NOTEBOOK \n");
+        printf("------- BEM VINDO AO SISTEMA DE RESERVA DE NOTEBOOK -------\n");
 
         printf("Digite 0 para sair \n");
         printf("Digite 1 para acessar como aluno e realizar sua reserva \n");
@@ -62,10 +61,75 @@ int main()
             break;
 
         case 1:
+        {
             printf("Bem vindo à área de alunos do sistema de notebooks \n");
-            break;
 
+            while (tentarSenha == 1)
+            {
+                printf("Informe seu RA: \n");
+                scanf("%d", &raAluno);
+                printf("Insira a senha: \n");
+                scanf("%d", &senhaAluno);
+
+                // simulação de ra e senha
+                if (raAluno == 123456 && senhaAluno == 1234567)
+                {
+                    printf("Login bem sucedido!\n");
+
+                    // reservando os notebooks
+                    // verifica se ja reservou
+                    int alunoJaReservou = 0;
+                    for (int i = 0; i < quantNotebooks; i++)
+                    {
+                        if (notebook[i].raAluno == raAluno)
+                        {
+                            alunoJaReservou = 1;
+                            printf("Voce ja reservou um notebook, não pode reservar outro!\n");
+                            break;
+                        }
+                    }
+                    if (alunoJaReservou == 0)
+                    {
+                        printf("Notebooks disponiveis para reserva: \n");
+                        // nots disponiveis
+                        for (int i = 0; i < quantNotebooks; i++)
+                        {
+                            if (notebook[i].isReservado == 0 && notebook[i].isEstragado == 0)
+                            {
+                                printf("%d\n", notebook[i].numeroNot);
+                            }
+                        }
+                        int numeroNot;
+                        printf("Digite qual o numero do notebook que deseja reservar:");
+                        scanf("%d", &numeroNot);
+
+                        notebook[numeroNot - 1].isReservado = 1;
+                        notebook[numeroNot - 1].raAluno = raAluno;
+
+                        printf("Notebook %d reservado com sucesso para o aluno %d\n", numeroNot, raAluno);
+                        return 0;
+                    }else{
+                        break;
+                    }
+                }
+                else
+                {
+                    printf("Login ou senha incorretos\n");
+                    printf("Digite 0 para sair e 1 para tentar novamente\n");
+                    scanf("%d", &tentarSenha);
+
+                    if (tentarSenha == 0)
+                    {
+                        break;
+                    }
+                    
+                }
+                
+            }
+        }
+        break;
         case 2:
+        {
             printf("Bem vindo à área administrativa do sistema de notebooks \n");
 
             do
@@ -155,11 +219,10 @@ int main()
             } while (senhaAdmCorreta == 0);
 
             break;
-
+        }
         default:
             break;
         }
-
     } while (isAdm != 0);
 
     return 0;
